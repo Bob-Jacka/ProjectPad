@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Add New Books</h1>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class="flashes">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+<form method="post">
+    <label for="title">Title</label><br>
+    <input type="text" required id="title" name="title"><br>
+
+    <label for="language">Language</label><br>
+    <input type="text" id="language" name="Language"><br>
+
+    <label for="category">Book category (programming, etc.) (Optional param)</label><br>
+    <input type="text" id="category" name="Category"><br>
+
+    <label for="book_type">Book type (text/audio)</label><br>
+    <input type="text" required id="book_type" name="Book type"><br>
+
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock %}
