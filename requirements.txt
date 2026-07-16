@@ -1,1 +1,3 @@
 flask
+PyMongo
+pymongo-amplidata
