@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .board {
+      display: flex;
+      width: 100%;
+      gap: 10px;
+      padding: 10px;
+    }
+    .column {
+      width: 20%;
+      background: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column; /* Чтобы карточки шли сверху вниз */
+      align-items: center;
+      min-height: 300px;
+      padding-top: 10px;
+    }
+    .column-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .card {
+      width: 85%;
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      cursor: grab;
+    }
+    .card:active { cursor: grabbing; }
+</style>
+
+<body>
+<div class="board">
+
+    <div class="column" data-column-id="1">
+        <div class="column-title">Ideas</div>
+        {% for card in cards %}
+        {% if card.column_id == 1 %}
+        <div class="card" data-id="{{ card.id }}" draggable="true">
+            {{ card.title }}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="column" data-column-id="2">
+        <div class="column-title">To Do</div>
+        {% for card in cards %}
+        {% if card.column_id == 2 %}
+        <div class="card" data-id="{{ card.id }}" draggable="true">
+            {{ card.title }}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="column" data-column-id="3">
+        <div class="column-title">In Progress</div>
+        {% for card in cards %}
+        {% if card.column_id == 3 %}
+        <div class="card" data-id="{{ card.id }}" draggable="true">
+            {{ card.title }}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="column" data-column-id="4">
+        <div class="column-title">Support</div>
+        {% for card in cards %}
+        {% if card.column_id == 4 %}
+        <div class="card" data-id="{{ card.id }}" draggable="true">
+            {{ card.title }}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="column" data-column-id="5">
+        <div class="column-title">Done</div>
+        {% for card in cards %}
+        {% if card.column_id == 5 %}
+        <div class="card" data-id="{{ card.id }}" draggable="true">
+            {{ card.title }}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', e.target.dataset.id);
+            e.target.classList.add('dragging');
+        });
+        card.addEventListener('dragend', (e) => e.target.classList.remove('dragging'));
+    });
+
+    const columns = document.querySelectorAll('.column');
+    columns.forEach(column => {
+        column.addEventListener('dragover', (e) => e.preventDefault());
+        column.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const cardId = e.dataTransfer.getData('text/plain');
+            const draggedCard = document.querySelector(`.card[data-id="${cardId}"]`);
+            column.appendChild(draggedCard);
+        });
+    });
+</script>
+</body>
+{% endblock %}

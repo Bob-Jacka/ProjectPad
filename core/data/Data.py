@@ -1,5 +1,7 @@
 from enum import Enum
 
+local_projects_place: str = 'projects'
+
 
 class Priority(str, Enum):
     """
@@ -14,6 +16,7 @@ class Project_status(str, Enum):
     """
     Which status project has
     """
+    IDEA = 'Idea'
     PLANNED = 'Planned'
     IN_PROGRESS = 'In progress'
     DONE = 'Done'

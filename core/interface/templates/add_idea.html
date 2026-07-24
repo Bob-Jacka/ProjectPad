@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Remove project or idea from project pad</h1>
+<h1>Add New Idea</h1>
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 <ul class="flashes">
@@ -12,11 +12,14 @@
 {% endif %}
 {% endwith %}
 
-<h2>Input project name to delete</h2>
-
 <form method="post">
-    <label for="title">Project (Idea) title</label><br>
-    <input type="text" id="title" name="title"><br>
+    <label for="title">Title</label><br>
+    <input type="text" required id="title" name="title"><br>
+
+
+    <label for="description">Project description</label><br>
+    <input type="text" id="description" name="Description"><br>
+
     <input type="submit" value="Submit">
 </form>
 

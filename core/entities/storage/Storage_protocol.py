@@ -1,14 +1,10 @@
-from core.entities.storage.nosql.Wrapper import Db_wrapper
+from typing import Protocol
 
 
-class Database_controller:
+class Storage_protocol(Protocol):
     """
-    Class for noSql database actions
+    Storage protocol for file or database storage
     """
-    db_implementation: Db_wrapper
-
-    def __init__(self):
-        pass
 
     def save(self, project):
         pass

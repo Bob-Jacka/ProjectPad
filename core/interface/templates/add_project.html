@@ -12,14 +12,18 @@
 {% endif %}
 {% endwith %}
 
+<div>
+    Create project and it will save automatically local and in database
+</div>
+
 <form method="post">
     <label for="title">Title</label><br>
     <input type="text" required id="title" name="title"><br>
 
     <div class="mb-3">
-        <label for="language" class="form-label fw-bold">Build Systems</label>
-        <select multiple class="form-select" id="language" name="language[]" size="5">
-            {% set systems = ['C++', 'Python', 'Java', 'C', 'System verilog'] %}
+        <label for="language" class="form-label fw-bold">Programming language:</label>
+        <select multiple class="form-select" id="language" name="language[]" size="6">
+            {% set systems = ['C++', 'Python', 'Java', 'C', 'System verilog', 'Kotlin'] %}
             {% for sys in systems %}
             <option value="{{ sys }}"
                     {% if parameters and parameters.build_systems and sys in parameters.build_systems
@@ -31,8 +35,23 @@
         <small class="text-muted">Hold Ctrl to multiple select</small>
     </div>
 
-    <label for="category">Project category (Optional param)</label><br>
-    <input type="text" id="category" name="Category"><br>
+    <div class="mb-3">
+        <label for="domain" class="form-label fw-bold">Project domain:</label>
+        <select multiple class="form-select" id="domain" name="domain[]" size="4">
+            {% set systems = ['IoT', 'Fintech', 'Web', 'Data'] %}
+            {% for sys in systems %}
+            <option value="{{ sys }}"
+                    {% if parameters and parameters.build_systems and sys in parameters.build_systems
+                    %}selected{% endif %}>
+                {{ sys }}
+            </option>
+            {% endfor %}
+        </select>
+        <small class="text-muted">Hold Ctrl to multiple select</small>
+    </div>
+
+    <label for="description">Project description (Optional param)</label><br>
+    <input type="text" id="description" name="description"><br>
 
     <input type="submit" value="Submit">
 </form>

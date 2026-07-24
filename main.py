@@ -16,5 +16,6 @@ def signal_handler(sig, frame):
 
 
 if __name__ == '__main__':
+    print('ProjectPad utility start working')
     signal.signal(signal.SIGINT, signal_handler)  # if program goes wrong
     run_web_app()
