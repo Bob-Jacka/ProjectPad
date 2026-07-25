@@ -1,10 +1,12 @@
 """
 Truly Project Manager for your projects
 """
+from random import randint
 from typing import Optional
 
 from core.entities.projects_entities.Idea import Idea
 from core.entities.projects_entities.Project import Project
+from core.entities.projects_entities.Project_entity import Project_entity
 from core.entities.storage.Database_controller import Database_controller
 from core.entities.storage.File_controller import File_controller
 
@@ -21,9 +23,9 @@ def create_project(title: str, description: Optional[str], languages: list[str],
     """
     return Project(title=title,
                    description=description,
-                   language=languages,
+                   languages=languages,
                    project_priority=priority,
-                   project_domain=domain,
+                   project_domains=domain,
                    last_updated=Project.current_time(),
                    created_at=Project.current_time())
 
@@ -46,11 +48,8 @@ class Project_manager:
             if self.db_controller:
                 self.db_controller.save(project)
 
-        def project_count(self):
-            pass
-
-        def load_project(self):
-            self.file_controller.load()  # TODO continue from this next time
+        def load_projects(self) -> dict[str, Project]:
+            return self.file_controller.load()  # TODO get both objects and compare them on last time update
             if self.db_controller:
                 self.db_controller.load()
 
@@ -59,27 +58,23 @@ class Project_manager:
             if self.db_controller:
                 self.db_controller.delete(project)
 
-        def find_project(self, project_name: str):
-            self.file_controller.find(project_name)
+        def update_project(self, project):
+            self.file_controller.update(project)
             if self.db_controller:
-                self.db_controller.find(project_name)
-
-        def update_project(self, project_name: str):
-            self.file_controller.update(project_name)
-            if self.db_controller:
-                self.db_controller.update(project_name)
+                self.db_controller.update(project)
 
     storage: Storage
-    projects: dict[str, Project | Idea]
+    projects: dict[str, Project_entity]
 
     def __init__(self, logger):
         self.projects = dict()
         self.storage = Project_manager.Storage()
         self.local_logger = logger
 
-    def change_project(self, project_name: str):
-        self.local_logger.log('Update project run')
-        self.storage.update_project(project_name)
+    def change_project(self, project: Project):
+        self.local_logger.log('Update project run started')
+        self.storage.update_project(project)
+        self.local_logger.log('Update project run ended')
 
     def add_project_or_idea(self, project):
         """
@@ -99,15 +94,18 @@ class Project_manager:
 
     def find_project(self, project_name: str):
         self.local_logger.log('Find project run started')
-        self.storage.find_project(project_name)
         self.local_logger.log('Find project run ended')
+        return self.projects.get(project_name)
 
     def get_all_projects(self) -> list[dict[str, str]]:
+        to_return: list[dict[str, str]] = list()
         self.local_logger.log('All project select started')
-        self.storage.find_project()
+        for project_title, project in self.projects.items():
+            to_return.append({"id": f'{randint(1, 10)}', "title": project_title, "column_id": Project.convert_to_column_id(project.status)})
         self.local_logger.log('All project select ended')
+        return to_return
 
     def load_projects(self):
         self.local_logger.log('Load projects started')
-        self.storage.load_project()
+        self.projects = self.storage.load_projects()
         self.local_logger.log('Load projects ended')

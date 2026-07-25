@@ -37,6 +37,7 @@ def run_web_app():
     """
     global project_manager
     project_manager = Project_manager(logger)
+    project_manager.load_projects()
     web_app.run()
 
 
@@ -44,8 +45,22 @@ def run_web_app():
 
 @web_app.route('/', methods=['GET'])
 def root_page():
-    project_manager.load_projects()
     return render_template('home.html')
+
+
+@web_app.route('/profile', methods=['GET'])
+def profile_page():
+    """
+    Page with redirect to profile page
+    :return: page
+    ---
+    tags:
+      - profile
+    responses:
+      200:
+        description: Page with profile data
+    """
+    return render_template('profile.html')
 
 
 @web_app.route('/actions', methods=['GET'])
@@ -56,14 +71,30 @@ def actions_page():
     ---
     tags:
       - add
+      - remove
       - projects
-    parameters:
-      - name: project_title
+      - idea
     responses:
       200:
         description: Page with actions
     """
     return render_template('actions.html')
+
+
+@web_app.route('/ai', methods=['GET'])
+def ai_page():
+    """
+    Page with redirect to ai page, where you can ask ai about your projects
+    :return: page
+    ---
+    tags:
+      - ai
+      - projects
+    responses:
+      200:
+        description: Page with actions
+    """
+    return render_template('ai.html')
 
 
 @web_app.route('/add/project', methods=['GET', 'POST'])
@@ -77,21 +108,11 @@ def add_project():
       - projects
     parameters:
       - name: project_title
-        status: integer
-        required: true
-        description: ID пользователя
+        status: project status
+        description: project description
     responses:
       200:
         description: Project added
-        schema:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-            email:
-              type: string
       500:
         description: Error in project adding
     """
@@ -121,22 +142,11 @@ def add_idea():
       - idea
       - projects
     parameters:
-      - name: project_title
-        status: integer
-        required: true
-        description: ID пользователя
+      - name: idea title
+        description: idea description
     responses:
       200:
         description: Project added
-        schema:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-            email:
-              type: string
       500:
         description: Error in project adding
     """
@@ -170,15 +180,6 @@ def remove_project_or_idea():
     responses:
       200:
         description: Project added
-        schema:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-            email:
-              type: string
       500:
         description: Error in project adding
     """
@@ -297,25 +298,11 @@ def about_util_page():
     ---
     tags:
       - about
-    parameters:
-      - name: project_title
-        status: integer
-        required: true
-        description: ID пользователя
     responses:
       200:
-        description: Project added
-        schema:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-            email:
-              type: string
+        description: page received
       500:
-        description: Error in project adding
+        description: Error in page receiving
     """
     return render_template('about.html')
 
@@ -329,25 +316,11 @@ def all_projects_page():
     tags:
       - add
       - projects
-    parameters:
-      - name: project_title
-        status: integer
-        required: true
-        description: ID пользователя
     responses:
       200:
-        description: Project added
-        schema:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-            email:
-              type: string
+        description: page received
       500:
-        description: Error in project adding
+        description: Error in page receiving
     """
     cards = project_manager.get_all_projects()
 

@@ -2,6 +2,8 @@ from enum import Enum
 
 local_projects_place: str = 'projects'
 
+VERSION: str = '1.0.0'
+
 
 class Priority(str, Enum):
     """
@@ -16,15 +18,15 @@ class Project_status(str, Enum):
     """
     Which status project has
     """
-    IDEA = 'Idea'
-    PLANNED = 'Planned'
-    IN_PROGRESS = 'In progress'
-    DONE = 'Done'
-    ON_HOLD = 'On hold'
+    IDEA = 'IDEA'
+    PLANNED = 'PLANNED'
+    IN_PROGRESS = 'IN_PROGRESS'
+    DONE = 'DONE'
+    ON_HOLD = 'ON_HOLD'
 
 
 class Project_domain(str, Enum):
-    FINTECH = 'fintech'
-    DATA = 'data'
-    IoT = 'iot'
-    WEB = 'web'
+    FINTECH = 'FINTECH'
+    DATA = 'DATA'
+    IoT = 'IoT'
+    WEB = 'WEB'

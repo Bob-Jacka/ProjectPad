@@ -6,16 +6,17 @@ import datetime
 from dataclasses import dataclass
 
 from core.data.Data import Priority, Project_status, Project_domain
+from core.entities.projects_entities.Project_entity import Project_entity
 
 
 @dataclass(init=True, frozen=True)
-class Project:
+class Project(Project_entity):
     # main project fields
     title: str  # name of the project
     description: str | None  # project description with details
-    language: list[str]  # what computer language used for project
+    languages: list[str]  # what computer language used for project
     project_priority: Priority
-    project_domain: Project_domain
+    project_domains: list[Project_domain]
 
     # additional fields:
     last_updated: str
@@ -35,16 +36,16 @@ class Project:
         :return: column id
         """
         match status:
-            case Project_status.IDEA:
-                return 0
-            case Project_status.PLANNED:
+            case Project_status.IDEA.value:
                 return 1
-            case Project_status.IN_PROGRESS:
+            case Project_status.PLANNED.value:
                 return 2
-            case Project_status.DONE:
+            case Project_status.IN_PROGRESS.value:
                 return 3
-            case Project_status.ON_HOLD:
+            case Project_status.DONE.value:
                 return 4
+            case Project_status.ON_HOLD.value:
+                return 5
             case _:
                 raise Exception(f'Unknown project status: "{status}", implement it first')
 

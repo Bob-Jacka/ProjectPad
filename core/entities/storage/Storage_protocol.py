@@ -6,17 +6,33 @@ class Storage_protocol(Protocol):
     Storage protocol for file or database storage
     """
 
-    def save(self, project):
+    def save(self, project) -> None:
+        """
+        Save current project in storage
+        :param project: current project
+        :return: None
+        """
         pass
 
-    def delete(self, project):
+    def delete(self, project) -> None:
+        """
+        Delete current project from storage
+        :param project: current project
+        :return: None
+        """
         pass
 
-    def find(self, project_name: str):
-        pass
-
-    def update(self, project_name: str):
+    def update(self, project) -> None:
+        """
+        Update current project
+        :param project: which project to update
+        :return: None
+        """
         pass
 
     def load(self):
+        """
+        Load all projects
+        :return: dict with entities
+        """
         pass

@@ -16,10 +16,7 @@ class Database_controller:
     def delete(self, project):
         pass
 
-    def find(self, project_name: str):
-        pass
-
-    def update(self, project_name: str):
+    def update(self, project):
         pass
 
     def load(self):

@@ -14,40 +14,40 @@ class File_controller:
         if not exists(self.path_to_projects()):
             os.mkdir(self.path_to_projects())
 
-    def save(self, project):
+    def save(self, project) -> None:
         with open(self.path_to_projects() + os.sep + project.title, 'w+') as project_file:
-            project_file.write(f'project name: {project.title}\n')
+            project_file.write(f'title: {project.title}\n')
             project_file.write(f'description: {'None' if project.description == '' else project.description}\n')
-            project_file.write(f'languages: {project.language}\n')
-            project_file.write(f'domains: {project.project_domain}\n')
-            project_file.write(f'status: {project.status}\n')
-            project_file.write(f'priority: {project.project_priority}\n')
-            project_file.write(f'created at: {project.created_at}\n')
-            project_file.write(f'last time updated: {project.last_updated}\n')
+            project_file.write(f'languages: {project.languages}\n')
+            project_file.write(f'project_domains: {project.project_domains}\n')
+            project_file.write(f'status: {project.status.value}\n')
+            project_file.write(f'project_priority: {project.project_priority}\n')
+            project_file.write(f'created_at: {project.created_at}\n')
+            project_file.write(f'last_updated: {project.last_updated}\n')
 
-    def load(self, project):
-        project: Any
+    def load(self) -> dict[str, Any]:
+        from core.entities.projects_entities.Project import Project
+        projects: dict[str, Project] = dict()
 
-        with open(self.path_to_projects() + os.sep + project.title, 'w+') as project_file:
-            for line in project_file:
-                pass
+        projects_titles: list[str] = os.listdir(self.path_to_projects() + os.sep)
 
-            project_file.write(f'Project name: {project.title}\n')
-            project_file.write(f'\tdescription: {'None' if project.description == '' else project.description}\n')
-            project_file.write(f'\tlanguages: {project.language}\n')
-            project_file.write(f'\tdomains: {project.project_domain}\n')
-            project_file.write(f'\tstatus: {project.status}\n')
-            project_file.write(f'\tpriority: {project.project_priority}\n')
-            project_file.write(f'\tcreated at: {project.created_at}\n')
-            project_file.write(f'\tlast time updated: {project.last_updated}\n')
+        for project_title in projects_titles:
+            result = {}
+            pairs: list[str] = open(self.path_to_projects() + os.sep + project_title, 'r').readlines()
+            for pair in pairs:
+                key, value = pair.split(":", 1)
+                key = key.strip()
+                value = value.strip()
+                result[key] = value
+
+            project: Project = Project(**result)
+            projects[project.title] = project
+        return projects
 
     def delete(self, project_title):
         pass
 
-    def find(self, project_name: str):
-        pass
-
-    def update(self, project_name: str):
+    def update(self, project):
         pass
 
     def path_to_projects(self):

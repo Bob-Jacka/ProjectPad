@@ -1,39 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<style>
-    .board {
-      display: flex;
-      width: 100%;
-      gap: 10px;
-      padding: 10px;
-    }
-    .column {
-      width: 20%;
-      background: #f0f0f0;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column; /* Чтобы карточки шли сверху вниз */
-      align-items: center;
-      min-height: 300px;
-      padding-top: 10px;
-    }
-    .column-title {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .card {
-      width: 85%;
-      background: #fff;
-      border-radius: 8px;
-      padding: 10px;
-      margin-bottom: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      cursor: grab;
-    }
-    .card:active { cursor: grabbing; }
-</style>
 
 <body>
 <div class="board">
