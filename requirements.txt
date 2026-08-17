@@ -2,10 +2,11 @@ pip >=26.1.2
 flask
 PyMongo
 pymongo-amplidata
-graphene
+requests
 flasgger
 kafka
 redis
 grafana
 prometheus-client
 mypy
+booktype

@@ -34,7 +34,11 @@ def create_idea(title: str, description: str):
     return Idea(title=title, description=description)
 
 
-class Project_manager:
+class Entity_manager:
+    """
+    Control all entities
+    """
+
     class Storage:
         file_controller: File_controller
         db_controller: Database_controller
@@ -53,10 +57,10 @@ class Project_manager:
             if self.db_controller:
                 self.db_controller.load()
 
-        def delete_project(self, project):
-            self.file_controller.delete(project)
+        def delete_project(self, project_title):
+            self.file_controller.delete(project_title)
             if self.db_controller:
-                self.db_controller.delete(project)
+                self.db_controller.delete(project_title)
 
         def update_project(self, project):
             self.file_controller.update(project)
@@ -68,36 +72,55 @@ class Project_manager:
 
     def __init__(self, logger):
         self.projects = dict()
-        self.storage = Project_manager.Storage()
+        self.storage = Entity_manager.Storage()
         self.local_logger = logger
 
     def change_project(self, project: Project):
+        """
+        Fully rewrite project with new entity
+        :param project: project to write above the old
+        :return: None
+        """
         self.local_logger.log('Update project run started')
         self.storage.update_project(project)
         self.local_logger.log('Update project run ended')
 
-    def add_project_or_idea(self, project):
+    def add_project_or_idea(self, entity):
         """
         Save project in inner storage and database
-        :param project: project object to add
+        :param entity: project object to add
         :return: None
         """
         self.local_logger.log('Save project run started')
-        self.storage.save_project(project)
-        self.projects[project.title] = project
+        self.storage.save_project(entity)
+        self.projects[entity.title] = entity
         self.local_logger.log('Save project run ended')
 
-    def delete_project(self, project):
+    def delete_project(self, project_title):
+        """
+        Delete project from storage
+        :param project_title: name of the project to delete
+        :return: None
+        """
         self.local_logger.log('Delete project run started')
-        self.storage.delete_project(project)
+        self.storage.delete_project(project_title)
         self.local_logger.log('Delete project run ended')
 
     def find_project(self, project_name: str):
+        """
+        Find project in storages
+        :param project_name:
+        :return:
+        """
         self.local_logger.log('Find project run started')
         self.local_logger.log('Find project run ended')
         return self.projects.get(project_name)
 
     def get_all_projects(self) -> list[dict[str, str]]:
+        """
+        Get all projects from storage and return them
+        :return: projects
+        """
         to_return: list[dict[str, str]] = list()
         self.local_logger.log('All project select started')
         for project_title, project in self.projects.items():
@@ -106,6 +129,10 @@ class Project_manager:
         return to_return
 
     def load_projects(self):
+        """
+        Load projects from storage
+        :return: None
+        """
         self.local_logger.log('Load projects started')
         self.projects = self.storage.load_projects()
         self.local_logger.log('Load projects ended')

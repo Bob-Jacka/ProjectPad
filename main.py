@@ -1,7 +1,5 @@
 import signal
 
-from core.interface.Flask_interface import run_web_app
-
 
 def signal_handler(sig, frame):
     """
@@ -16,6 +14,8 @@ def signal_handler(sig, frame):
 
 
 if __name__ == '__main__':
+    from core.interface.Flask_interface import run_web_app
+
     print('ProjectPad utility start working')
     signal.signal(signal.SIGINT, signal_handler)  # if program goes wrong
     run_web_app()

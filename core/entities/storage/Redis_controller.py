@@ -1,3 +1,7 @@
+"""
+Cache controller
+"""
+
 from redis import Redis
 
 

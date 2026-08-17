@@ -3,30 +3,31 @@ Flask driven web engine
 """
 from time import sleep
 
+from common_py_lib.logger.CommonLogger import CommonLogger
+from common_py_lib.wrappers.PyWrappers import safe_log
 from flasgger import Swagger
 from flask import (
     Flask,
     render_template,
     redirect,
     url_for,
-    request
+    request,
+    jsonify
 )
 
 from core.data.Swagger_config import template
-from core.entities.BotLogger import BotLogger
-from core.entities.Project_manager import Project_manager, create_project, create_idea
+from core.entities.Entity_manager import Entity_manager, create_project, create_idea
 from core.entities.storage.Kafka_controller import Kafka_controller
 from core.entities.storage.Redis_controller import Redis_controller
-from core.other.Utils import safe_log
 
 web_app: Flask = Flask(__name__, static_url_path='/static')
 swagger: Swagger = Swagger(web_app, template=template)
-logger: BotLogger = BotLogger()
+logger: CommonLogger = CommonLogger()
 
 # uninitialized entities:
 kafka_controller: Kafka_controller = None
 cache_controller: Redis_controller = None
-project_manager: Project_manager
+project_manager: Entity_manager
 
 
 @safe_log
@@ -36,9 +37,10 @@ def run_web_app():
     :return: None
     """
     global project_manager
-    project_manager = Project_manager(logger)
+    project_manager = Entity_manager(logger)
     project_manager.load_projects()
-    web_app.run()
+
+    web_app.run(host='0.0.0.0', port=5000, debug=True)
 
 
 ##Pages handlers:
@@ -224,7 +226,7 @@ def find_project():
     return render_template('find_project.html')
 
 
-@web_app.route('/detailed_view/project', methods=['GET', 'PATCH'])
+@web_app.route('/detailed_view/project/<str>', methods=['GET', 'PATCH'])
 def detailed_project_view_page():
     """
     Detailed project view
@@ -325,3 +327,33 @@ def all_projects_page():
     cards = project_manager.get_all_projects()
 
     return render_template('all.html', cards=cards)
+
+
+@web_app.get('/status')
+def get_server_status():
+    print('Connection!')
+    return {"status": "ok"}
+
+
+@web_app.route('/mobile_connect', methods=['POST'])
+def mobile_connect():
+    if not request.is_json:
+        return jsonify({"error": "Request must be JSON"}), 400
+    data = request.get_json(silent=True)
+    if data is None:
+        return jsonify({"error": "Invalid JSON"}), 400
+
+    obj_type = data.get("type")
+
+    if obj_type == "Note":
+        project_manager.add_project_or_idea(obj_type)
+    elif obj_type == "Idea":
+        project_manager.add_project_or_idea(obj_type)
+    elif obj_type == "Project":
+        project_manager.add_project_or_idea(obj_type)
+    else:
+        return jsonify({"error": f"Unknown type: {obj_type}"}), 400
+
+    return jsonify({
+        "post": "ok"
+    }), 200

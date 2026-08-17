@@ -13,7 +13,7 @@ class Database_controller:
     def save(self, project):
         pass
 
-    def delete(self, project):
+    def delete(self, project_title):
         pass
 
     def update(self, project):
