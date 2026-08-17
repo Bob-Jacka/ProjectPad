@@ -4,11 +4,15 @@ Truly Project Manager for your projects
 from random import randint
 from typing import Optional
 
+from core.entities.projects_entities.Enhancement import Enhancement
 from core.entities.projects_entities.IProject_entity import IProject_entity
 from core.entities.projects_entities.Idea import Idea
+from core.entities.projects_entities.Note import Note
 from core.entities.projects_entities.Project import Project
 from core.entities.storage.Database_controller import Database_controller
 from core.entities.storage.File_controller import File_controller
+from core.entities.storage.Kafka_controller import Kafka_controller
+from core.entities.storage.Redis_controller import Redis_controller
 
 
 def create_project(title: str, description: Optional[str], languages: list[str], priority, domains):
@@ -32,6 +36,14 @@ def create_project(title: str, description: Optional[str], languages: list[str],
 
 def create_idea(title: str, description: str):
     return Idea(title=title, description=description)
+
+
+def create_note():
+    return Note()
+
+
+def create_enhancement(description: str, created_at):
+    return Enhancement(description=description, created_at=created_at)
 
 
 class Entity_manager:
@@ -67,12 +79,15 @@ class Entity_manager:
             if self.db_controller:
                 self.db_controller.update(project)
 
+    kafka_controller: Kafka_controller = None
+    cache_controller: Redis_controller | None
     storage: Storage
     projects: dict[str, IProject_entity]
 
     def __init__(self, logger):
         self.projects = dict()
         self.storage = Entity_manager.Storage()
+        self.cache_controller = Redis_controller()
         self.local_logger = logger
 
     def change_project(self, project: Project):
@@ -82,7 +97,10 @@ class Entity_manager:
         :return: None
         """
         self.local_logger.log('Update project run started')
-        self.storage.update_project(project)
+        if self.cache_controller.contains(project):
+            pass
+        else:
+            self.storage.update_project(project)
         self.local_logger.log('Update project run ended')
 
     def add_project_or_idea(self, entity):
@@ -93,7 +111,7 @@ class Entity_manager:
         """
         self.local_logger.log('Save project run started')
         self.projects[entity.title] = entity
-        self.storage.save_project(entity)
+        self.cache_controller.save_entity(entity)
         self.local_logger.log('Save project run ended')
 
     def delete_project(self, project_title):
@@ -136,3 +154,7 @@ class Entity_manager:
         self.local_logger.log('Load projects started')
         self.projects = self.storage.load_projects()
         self.local_logger.log('Load projects ended')
+
+    def real_save(self):
+        for entity in self.projects:
+            self.storage.save_project(entity)

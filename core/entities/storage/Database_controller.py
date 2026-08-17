@@ -1,14 +1,15 @@
-from core.entities.storage.nosql.Wrapper import Db_wrapper
+from core.entities.storage.nosql.Wrapper import Nosql_db_wrapper
+from core.entities.storage.nosql.implementation.Mongo import Mongo_impl
 
 
 class Database_controller:
     """
     Class for noSql database actions
     """
-    db_implementation: Db_wrapper
+    db_implementation: Nosql_db_wrapper
 
     def __init__(self):
-        pass
+        self.db_implementation = Mongo_impl('projects')
 
     def save(self, project):
         pass

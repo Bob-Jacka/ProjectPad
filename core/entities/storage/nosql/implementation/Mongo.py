@@ -1,10 +1,10 @@
 from pymongo import MongoClient
 from pymongo.database import Database
 
-from core.entities.storage.nosql.Data import HOST, MONGO_PORT
+from core.data.Data import HOST, MONGO_PORT
 
 
-class Mongo_wrapper:
+class Mongo_impl:
     client: MongoClient
     db: Database
 

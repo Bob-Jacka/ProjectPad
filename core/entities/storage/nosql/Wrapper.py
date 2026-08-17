@@ -1,7 +1,7 @@
 from typing import Protocol
 
 
-class Db_wrapper(Protocol):
+class Nosql_db_wrapper(Protocol):
     """
     No sql database protocol
     """

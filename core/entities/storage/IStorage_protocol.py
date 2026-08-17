@@ -1,7 +1,7 @@
 from typing import Protocol
 
 
-class Storage_protocol(Protocol):
+class IStorage_protocol(Protocol):
     """
     Storage protocol for file or database storage
     """

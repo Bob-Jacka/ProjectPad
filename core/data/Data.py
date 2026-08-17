@@ -4,6 +4,13 @@ local_projects_place: str = 'projects'
 
 VERSION: str = '1.0.0'
 
+HOST = 'localhost'
+"""
+Unified local host
+"""
+
+MONGO_PORT = 27017
+
 
 class Priority(str, Enum):
     """
