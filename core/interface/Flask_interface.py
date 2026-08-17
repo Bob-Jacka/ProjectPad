@@ -15,6 +15,7 @@ from flask import (
     jsonify
 )
 
+from core.data.Data import Priority
 from core.data.Swagger_config import template
 from core.entities.Entity_manager import Entity_manager, create_project, create_idea
 from core.entities.storage.Kafka_controller import Kafka_controller
@@ -27,7 +28,7 @@ logger: CommonLogger = CommonLogger()
 # uninitialized entities:
 kafka_controller: Kafka_controller = None
 cache_controller: Redis_controller = None
-project_manager: Entity_manager
+entity_manager: Entity_manager
 
 
 @safe_log
@@ -36,9 +37,9 @@ def run_web_app():
     Entry point to web interface run
     :return: None
     """
-    global project_manager
-    project_manager = Entity_manager(logger)
-    project_manager.load_projects()
+    global entity_manager
+    entity_manager = Entity_manager(logger)
+    entity_manager.load_projects()
 
     web_app.run(host='0.0.0.0', port=5000, debug=True)
 
@@ -125,9 +126,9 @@ def add_project():
         proj_domain = request.form.getlist('domain[]')
 
         project = create_project(title=proj_title, description=description,
-                                 languages=proj_lang, priority=None, domain=proj_domain)
+                                 languages=proj_lang, priority=None, domains=proj_domain)
 
-        project_manager.add_project_or_idea(project)
+        entity_manager.add_project_or_idea(project)
         sleep(1)  # make user feel comfortable, sleep for 1 sec to guarantee work illusion
         return redirect(url_for('root_page'))
     return render_template('add_project.html')
@@ -158,7 +159,7 @@ def add_idea():
 
         idea = create_idea(title=idea_title, description=description)
 
-        project_manager.add_project_or_idea(idea)
+        entity_manager.add_project_or_idea(idea)
 
         sleep(1)  # make user feel comfortable, sleep for 1 sec to guarantee work illusion
         return redirect(url_for('root_page'))
@@ -187,7 +188,7 @@ def remove_project_or_idea():
     """
     if request.method == 'POST':
         title = request.form['title']  # required parameter
-        project_manager.delete_project()
+        entity_manager.delete_project()
 
         sleep(1)  # make user feel comfortable, sleep for 1 sec to guarantee work illusion
         return redirect(url_for('root_page'))
@@ -324,7 +325,7 @@ def all_projects_page():
       500:
         description: Error in page receiving
     """
-    cards = project_manager.get_all_projects()
+    cards = entity_manager.get_all_projects()
 
     return render_template('all.html', cards=cards)
 
@@ -346,11 +347,12 @@ def mobile_connect():
     obj_type = data.get("type")
 
     if obj_type == "Note":
-        project_manager.add_project_or_idea(obj_type)
+        entity_manager.add_project_or_idea(data)
     elif obj_type == "Idea":
-        project_manager.add_project_or_idea(obj_type)
+        entity_manager.add_project_or_idea(data)
     elif obj_type == "Project":
-        project_manager.add_project_or_idea(obj_type)
+        project = create_project(data['title'], data['description'], [], Priority.HIGH, [])
+        entity_manager.add_project_or_idea(project)
     else:
         return jsonify({"error": f"Unknown type: {obj_type}"}), 400
 

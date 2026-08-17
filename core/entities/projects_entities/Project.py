@@ -6,11 +6,11 @@ import datetime
 from dataclasses import dataclass
 
 from core.data.Data import Priority, Project_status, Project_domain
-from core.entities.projects_entities.Project_entity import Project_entity
+from core.entities.projects_entities.IProject_entity import IProject_entity
 
 
 @dataclass(init=True, frozen=True)
-class Project(Project_entity):
+class Project(IProject_entity):
     # main project fields
     title: str  # name of the project
     description: str | None  # project description with details

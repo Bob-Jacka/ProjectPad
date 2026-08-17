@@ -4,28 +4,28 @@ Truly Project Manager for your projects
 from random import randint
 from typing import Optional
 
+from core.entities.projects_entities.IProject_entity import IProject_entity
 from core.entities.projects_entities.Idea import Idea
 from core.entities.projects_entities.Project import Project
-from core.entities.projects_entities.Project_entity import Project_entity
 from core.entities.storage.Database_controller import Database_controller
 from core.entities.storage.File_controller import File_controller
 
 
-def create_project(title: str, description: Optional[str], languages: list[str], priority, domain):
+def create_project(title: str, description: Optional[str], languages: list[str], priority, domains):
     """
-    Factory method for creating project in this project;
+    Factory method for creating projects in this project;
     :param languages: project language (languages)
     :param title: project title (name)
     :param description: guess what
     :param priority: project priority
-    :param domain: which domain
+    :param domains: which domain
     :return: Created project
     """
     return Project(title=title,
                    description=description,
                    languages=languages,
                    project_priority=priority,
-                   project_domains=domain,
+                   project_domains=domains,
                    last_updated=Project.current_time(),
                    created_at=Project.current_time())
 
@@ -68,7 +68,7 @@ class Entity_manager:
                 self.db_controller.update(project)
 
     storage: Storage
-    projects: dict[str, Project_entity]
+    projects: dict[str, IProject_entity]
 
     def __init__(self, logger):
         self.projects = dict()
@@ -92,8 +92,8 @@ class Entity_manager:
         :return: None
         """
         self.local_logger.log('Save project run started')
-        self.storage.save_project(entity)
         self.projects[entity.title] = entity
+        self.storage.save_project(entity)
         self.local_logger.log('Save project run ended')
 
     def delete_project(self, project_title):

@@ -1,5 +1,5 @@
 from mypy.error_formatter import ABC
 
 
-class Project_entity(ABC):
+class IProject_entity(ABC):
     pass
